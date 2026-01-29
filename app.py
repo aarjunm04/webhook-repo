@@ -114,17 +114,20 @@ def handle_pull_request_event(payload):
         
         # Determine if it's a merge or just a pull request
         if action == 'closed' and pull_request.get('merged', False):
-            # This is a MERGE event (brownie points!)
-            event_type = 'MERGE'
-            request_id = f"merge_{request_id}"  # Unique ID for merge
-        elif action == 'opened':
-            # This is a PULL_REQUEST event
-            event_type = 'PULL_REQUEST'
-            request_id = f"pr_{request_id}"  # Unique ID for PR
+                # This is a MERGE event (brownie points!)
+                event_type = 'MERGE'
+                request_id = f"merge_{request_id}"  # Unique ID for merge
+                timestamp = pull_request.get('merged_at', pull_request['updated_at'])
+        elif action in ['opened', 'synchronize', 'reopened']:
+                # This is a PULL_REQUEST event
+                event_type = 'PULL_REQUEST'
+                request_id = f"pr_{request_id}_{action}"  # Unique ID per action
+                timestamp = pull_request.get('updated_at', pull_request['created_at'])
         else:
-            # Other PR actions we don't care about
-            print(f"⚠️ PR action '{action}' ignored")
-            return
+                # Other PR actions we don't care about
+                print(f"⚠️ PR action '{action}' ignored")
+        return
+
         
         # Create event document
         event_doc = {
