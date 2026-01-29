@@ -1,10 +1,21 @@
+"""
+GitHub Webhook Monitor
+======================
+A Flask application that receives GitHub webhook events (Push, Pull Request, Merge),
+stores them in MongoDB, and displays them in a real-time polling UI.
+
+Author: [Your Name]
+Created for: Techstax Developer Assessment
+Date: January 29, 2026
+"""
+
 from flask import Flask, request, jsonify, render_template
 from pymongo import MongoClient
 from datetime import datetime
 import os
 from dotenv import load_dotenv
 
-# Load environment variables
+# Load environment variables from .env file
 load_dotenv()
 
 app = Flask(__name__)
